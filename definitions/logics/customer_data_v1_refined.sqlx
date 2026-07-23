@@ -6,6 +6,10 @@ config {
   type: "table",
   schema: "gold",
   tags: [],
+  bigquery: {
+    partitionBy: "signup_timestamp",
+    clusterBy: ["customer_name"],
+  },
   description: "Generated table: gcp-accelerator-380712.gold.customer_data_v1_refined"
 }
 

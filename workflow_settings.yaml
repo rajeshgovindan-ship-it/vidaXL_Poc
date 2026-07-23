@@ -1,0 +1,4 @@
+defaultProject: "gcp-accelerator-380712"
+defaultLocation: "us-central1"
+defaultDataset: "gold"
+defaultAssertionDataset: "gold_assertions"

@@ -1,0 +1,6 @@
+config {
+  type: "declaration",
+  database: "gcp-accelerator-380712",
+  schema: "bq_data",
+  name: "customer_data_v1"
+}

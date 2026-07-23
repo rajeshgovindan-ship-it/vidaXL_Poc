@@ -3,22 +3,18 @@
 -- Tags: 
 -- Idempotent via ${ref()} + Dataform incremental/operations semantics
 config {
-  type: "operations",
+  type: "table",
   schema: "gold",
   tags: [],
   bigquery: {
     partitionBy: "order_date",
-    clusterBy: ["status"],
-  },
-  assertions: {
-    nonNull: ["order_date"]
+    clusterBy: ["status", "uid"],
   },
   description: "Generated table: gcp-accelerator-380712.gold.orders_data_refined"
 }
 
-CREATE OR REPLACE TABLE `gcp-accelerator-380712.gold.orders_data_refined` AS 
 SELECT
-orders_data.order_date ROW_NUMBER() OVER (PARTITION BY order_date ORDER BY status DESC) AS order_date,
+orders_data.order_date AS order_date,
 orders_data.uid AS uid,
 orders_data.amount AS amount,
 orders_data.status AS status

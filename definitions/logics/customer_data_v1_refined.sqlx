@@ -10,7 +10,9 @@ config {
 }
 
 SELECT
-customer_data_v1.customer_id AS customer_id,
+customer_data_v1.customer_name AS customer_name,
+customer_data_v1.email AS email,
+customer_data_v1.is_active AS is_active,
 customer_data_v1.signup_timestamp AS signup_timestamp,
 customer_data_v1.account_balance AS account_balance,
 customer_data_v1.tags AS tags

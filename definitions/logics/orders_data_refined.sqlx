@@ -17,11 +17,11 @@ config {
   description: "Gold table 'orders_data_refined' -- Dataform-managed incremental load."
 }
 
-WITH order_sales AS (
+WITH orderitem_sales AS (
   SELECT
-    ROW_NUMBER() OVER (PARTITION BY order_date ORDER BY order_id DESC) AS order_id
+    ROW_NUMBER() OVER (PARTITION BY nan ORDER BY order_id nan) AS order_id
   FROM ${ref("orders_data")} AS orders_data
-  WHERE amount>5000
+  WHERE amount>2000
 )
 SELECT
   orders_data.order_date AS order_date,

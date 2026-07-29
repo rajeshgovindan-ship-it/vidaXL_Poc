@@ -3,27 +3,32 @@
 -- Tags: gold_sales
 -- Idempotent via ${ref()} + Dataform incremental/operations semantics
 config {
-  type: "operations",
-  hasOutput: 'true',
+  type: "incremental",
   schema: "gold",
   tags: ["gold_sales"],
-  description: "goldtable have unique records"
+  bigquery: {
+    partitionBy: "order_date",
+    clusterBy: ["order_id", "status"],
+  },
+  assertions: {
+    uniqueKey: ["order_id"],
+    nonNull: ["order_id"]
+  },
+  description: "Gold table 'orders_data_refined' -- Dataform-managed incremental load."
 }
 
-CREATE OR REPLACE TABLE `gcp-accelerator-380712.gold.orders_data_refined`
-PARTITION BY
-  order_date
-CLUSTER BY
-  order_id, status
-AS 
-WITH order_qty AS (
+WITH orders_sales AS (
   SELECT
-    orders_data.order_id DENSE_RANK() OVER (PARTITION BY order_date ORDER BY order_id,status DESC) AS order_id
+    DENSE_RANK() OVER (PARTITION BY order_date ORDER BY order_id,status DESC) AS order_id
   FROM ${ref("orders_data")} AS orders_data
   WHERE amount>5000
+),
+order_qty AS (
+  SELECT
+    count(order_id) as total_order AS order_date
+  FROM ${ref("orders_data")} AS orders_data
 )
 SELECT
-  orders_data.order_date AS order_date,
   orders_data.uid AS uid,
   orders_data.amount AS amount,
   orders_data.status AS status

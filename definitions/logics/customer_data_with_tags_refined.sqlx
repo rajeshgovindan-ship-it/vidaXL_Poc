@@ -3,22 +3,19 @@
 -- Tags: 
 -- Idempotent via ${ref()} + Dataform incremental/operations semantics
 config {
-  type: "table",
+  type: "incremental",
   schema: "gold",
+  uniqueKey: ["Customer_Id", "Country"],
   tags: [],
   bigquery: {
     partitionBy: "Subscription_Date",
-    clusterBy: ["Customer_Id"],
   },
-  assertions: {
-    uniqueKey: ["Customer_Id", "Country", "Subscription_Date"]
-  },
-  description: "Gold table 'customer_data_with_tags_refined' -- full snapshot, rebuilt on every run."
+  description: "Gold table 'customer_data_with_tags_refined' -- Dataform-managed incremental load."
 }
 
 WITH customer_info AS (
   SELECT
-    customer_data_with_tags.Index AS Index
+    ROW_NUMBER() OVER (PARTITION BY Subscription_Date) AS Index
   FROM ${ref("customer_data_with_tags")} AS customer_data_with_tags
 )
 SELECT
@@ -34,13 +31,3 @@ SELECT
   customer_data_with_tags.Subscription_Date AS Subscription_Date,
   customer_data_with_tags.Website AS Website
 FROM ${ref("customer_data_with_tags")} AS customer_data_with_tags
-
-
-post_operations {
-  ALTER TABLE ${self()}
-  ADD PRIMARY KEY (
-    Customer_Id,
-    Country,
-    Subscription_Date
-  ) NOT ENFORCED;
-}

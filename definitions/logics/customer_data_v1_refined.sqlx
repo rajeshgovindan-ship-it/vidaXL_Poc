@@ -7,7 +7,7 @@ config {
   schema: "gold",
   tags: [],
   bigquery: {
-    partitionBy: "signup_timestamp",
+    partitionBy: "TIMESTAMP_TRUNC(signup_timestamp, DAY)",
     clusterBy: ["customer_id"],
   },
   assertions: {

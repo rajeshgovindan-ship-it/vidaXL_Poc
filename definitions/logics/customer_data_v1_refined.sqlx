@@ -16,13 +16,8 @@ config {
   description: "Gold table 'customer_data_v1_refined' -- full snapshot, rebuilt on every run."
 }
 
-WITH customer_info AS (
-  SELECT
-    customer_data_v1.customer_id AS customer_id
-  FROM ${ref("customer_data_v1")} AS customer_data_v1
-  ORDER BY account_balance DESC
-)
 SELECT
+  customer_data_v1.customer_id AS customer_id,
   customer_data_v1.customer_name AS customer_name,
   customer_data_v1.email AS email,
   customer_data_v1.is_active AS is_active,
@@ -30,6 +25,7 @@ SELECT
   customer_data_v1.account_balance AS account_balance,
   customer_data_v1.tags AS tags
 FROM ${ref("customer_data_v1")} AS customer_data_v1
+ORDER BY account_balance DESC
 
 
 post_operations {

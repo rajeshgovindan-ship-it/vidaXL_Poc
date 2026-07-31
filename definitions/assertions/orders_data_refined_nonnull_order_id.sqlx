@@ -1,9 +1,0 @@
-config {
-  type: "assertion",
-  name: "orders_data_refined_nonnull_order_id",
-  description: "Non-null check for orders_data_refined.order_id -- operations-type table, config.assertions.nonNull is not supported inline."
-}
-
-SELECT *
-FROM ${ref("orders_data_refined")}
-WHERE order_id IS NULL

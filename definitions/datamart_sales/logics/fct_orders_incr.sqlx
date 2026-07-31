@@ -6,7 +6,6 @@ config {
   type: "incremental",
   schema: "gold_sales",
   uniqueKey: ["order_id", "customer_id"],
-  onSchemaChange: "EXTEND",
   hermetic: true,
   tags: ["datamart_sales", "fct_orders_incr", "gold", "hourly"],
   columns: {

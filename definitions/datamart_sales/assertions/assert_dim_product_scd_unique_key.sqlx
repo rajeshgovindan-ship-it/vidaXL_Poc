@@ -1,0 +1,10 @@
+config {
+  type: "assertion",
+  name: "assert_dim_product_scd_unique_key",
+  description: "Uniqueness check for dim_product_scd (product_id) -- operations-type table, config.assertions.uniqueKey is not supported inline."
+}
+
+SELECT product_id, COUNT(*) AS row_count
+FROM ${ref("dim_product_scd")}
+GROUP BY product_id
+HAVING COUNT(*) > 1

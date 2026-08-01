@@ -1,10 +1,10 @@
 config {
   type: "assertion",
   name: "assert_customer_data_with_tags_refined_unique_key",
-  description: "Uniqueness check for customer_data_with_tags_refined (Index) -- all data quality checks are generated as standalone assertion files."
+  description: "Uniqueness check for customer_data_with_tags_refined (Customer_Id, Country) -- all data quality checks are generated as standalone assertion files."
 }
 
-SELECT Index, COUNT(*) AS row_count
+SELECT Customer_Id, Country, COUNT(*) AS row_count
 FROM ${ref("customer_data_with_tags_refined")}
-GROUP BY Index
+GROUP BY Customer_Id, Country
 HAVING COUNT(*) > 1

@@ -1,0 +1,10 @@
+config {
+  type: "assertion",
+  name: "assert_orders_data_refined_unique_key",
+  description: "Uniqueness check for orders_data_refined (order_id, order_date, uid) -- all data quality checks are generated as standalone assertion files."
+}
+
+SELECT order_id, order_date, uid, COUNT(*) AS row_count
+FROM ${ref("orders_data_refined")}
+GROUP BY order_id, order_date, uid
+HAVING COUNT(*) > 1

@@ -5,19 +5,19 @@
 config {
   type: "incremental",
   schema: "gold",
-  uniqueKey: ["order_id"],
+  uniqueKey: ["order_id", "order_id"],
   tags: ["dt_salesmart", "gold", "daily"],
   columns: {
-    order_id: "order unique number",
+    order_id: "unique order_id",
     order_date: "order name",
-    uid: "TODO: add a description for this column.",
-    amount: "TODO: add a description for this column.",
-    status: "TODO: add a description for this column."
+    uid: "order unique id for scd2",
+    amount: "order amount",
+    status: "order status"
   },
-  description: "order detail table"
+  description: "this only table to have orders details"
 }
 
-WITH orders_details AS (
+WITH order_information AS (
   SELECT
     orders_data.order_id AS order_id,
     ROW_NUMBER() OVER (PARTITION BY Date(order_date) ORDER BY amount DESC) AS rn,
@@ -30,17 +30,20 @@ WITH orders_details AS (
   QUALIFY rn=1
 )
 SELECT
-  orders_details.order_date AS order_date,
-  orders_details.uid AS uid,
-  orders_details.amount AS amount,
-  orders_details.status AS status
-FROM orders_details AS orders_details
+  order_information.order_date AS order_date,
+  order_information.uid AS uid,
+  order_information.amount AS amount,
+  order_information.status AS status,
+  order_information.order_id AS order_id
+FROM order_information AS order_information
+WHERE rn=1
 
 
 post_operations {
   ${when(!incremental(),
     `ALTER TABLE ${self()}
     ADD PRIMARY KEY (
+      order_id,
       order_id
     ) NOT ENFORCED`
   )}

@@ -6,6 +6,7 @@ config {
   type: "incremental",
   schema: "gold",
   uniqueKey: ["Customer_Id"],
+  onSchemaChange: "EXTEND",
   tags: ["dt_salesmart", "dim_customer_tags", "gold", "daily"],
   columns: {
     Customer_Id: "Business customer id.",

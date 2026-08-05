@@ -1,0 +1,10 @@
+config {
+  type: "assertion",
+  name: "assert_dim_customer_tags_unique_key",
+  description: "Uniqueness check for dim_customer_tags (Customer_Id) -- all data quality checks are generated as standalone assertion files."
+}
+
+SELECT Customer_Id, COUNT(*) AS row_count
+FROM ${ref("dim_customer_tags")}
+GROUP BY Customer_Id
+HAVING COUNT(*) > 1

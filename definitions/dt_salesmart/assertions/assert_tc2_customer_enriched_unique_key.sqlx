@@ -1,0 +1,10 @@
+config {
+  type: "assertion",
+  name: "assert_tc2_customer_enriched_unique_key",
+  description: "Uniqueness check for tc2_customer_enriched (customer_id) -- all data quality checks are generated as standalone assertion files."
+}
+
+SELECT customer_id, COUNT(*) AS row_count
+FROM ${ref("tc2_customer_enriched")}
+GROUP BY customer_id
+HAVING COUNT(*) > 1

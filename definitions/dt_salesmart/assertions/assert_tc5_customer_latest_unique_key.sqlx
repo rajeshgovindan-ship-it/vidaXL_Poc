@@ -1,0 +1,10 @@
+config {
+  type: "assertion",
+  name: "assert_tc5_customer_latest_unique_key",
+  description: "Uniqueness check for tc5_customer_latest (Customer_Id) -- all data quality checks are generated as standalone assertion files."
+}
+
+SELECT Customer_Id, COUNT(*) AS row_count
+FROM ${ref("tc5_customer_latest")}
+GROUP BY Customer_Id
+HAVING COUNT(*) > 1

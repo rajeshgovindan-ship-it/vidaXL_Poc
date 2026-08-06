@@ -1,0 +1,10 @@
+config {
+  type: "assertion",
+  name: "assert_tc4_customer_spend_rank_unique_key",
+  description: "Uniqueness check for tc4_customer_spend_rank (uid) -- all data quality checks are generated as standalone assertion files."
+}
+
+SELECT uid, COUNT(*) AS row_count
+FROM ${ref("tc4_customer_spend_rank")}
+GROUP BY uid
+HAVING COUNT(*) > 1

@@ -5,7 +5,7 @@
 config {
   type: "incremental",
   schema: "gold",
-  uniqueKey: ["customer_id", "Index", "Customer_Id", "order_id"],
+  uniqueKey: ["customer_id", "Index", "order_id"],
   tags: ["dt_sales_mart"],
   columns: {
     customer_id: "TODO: add a description for this column.",
@@ -65,7 +65,6 @@ post_operations {
     ADD PRIMARY KEY (
       customer_id,
       Index,
-      Customer_Id,
       order_id
     ) NOT ENFORCED`
   )}

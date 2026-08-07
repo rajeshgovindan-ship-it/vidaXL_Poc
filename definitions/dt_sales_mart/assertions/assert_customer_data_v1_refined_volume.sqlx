@@ -1,13 +1,13 @@
 config {
   type: "assertion",
   name: "assert_customer_data_v1_refined_volume",
-  description: "Volume check for customer_data_v1_refined -- fails if the most recent Subscription_Date loaded fewer than 50% of the average rows per period over the preceding 7. Catches a load that ran 'successfully' but produced far less data than normal."
+  description: "Volume check for customer_data_v1_refined -- fails if the most recent DATE(signup_timestamp) loaded fewer than 50% of the average rows per period over the preceding 7. Catches a load that ran 'successfully' but produced far less data than normal."
 }
 
 WITH per_period AS (
-  SELECT Subscription_Date AS p, COUNT(*) AS n
+  SELECT DATE(signup_timestamp) AS p, COUNT(*) AS n
   FROM ${ref("customer_data_v1_refined")}
-  GROUP BY Subscription_Date
+  GROUP BY DATE(signup_timestamp)
 ),
 latest AS (SELECT MAX(p) AS p FROM per_period),
 baseline AS (

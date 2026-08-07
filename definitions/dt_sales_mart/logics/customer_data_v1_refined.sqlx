@@ -3,9 +3,9 @@
 -- Tags: dt_sales_mart
 -- Idempotent via ${ref()} + Dataform incremental/operations semantics
 config {
-  type: "operations",
-  hasOutput: 'true',
+  type: "incremental",
   schema: "gold",
+  uniqueKey: ["customer_id", "Index", "Customer_Id", "order_id"],
   tags: ["dt_sales_mart"],
   columns: {
     customer_id: "TODO: add a description for this column.",
@@ -25,19 +25,14 @@ config {
     amount: "TODO: add a description for this column.",
     status: "TODO: add a description for this column."
   },
-  description: "Gold table 'customer_data_v1_refined' -- Slowly Changing Dimension Type 2 (full history, versioned by start/end date)."
+  bigquery: {
+    partitionBy: "DATE(signup_timestamp)",
+    clusterBy: ["customer_id", "customer_name"],
+  },
+  description: "Gold table 'customer_data_v1_refined' -- Dataform-managed incremental load."
 }
 
-
--- Step 1: Ensure target table exists
-CREATE TABLE IF NOT EXISTS `gcp-accelerator-380712.gold.customer_data_v1_refined`
-PARTITION BY
-  DATE(signup_timestamp)
-CLUSTER BY
-  customer_id, customer_name
-OPTIONS(description='''Gold table 'customer_data_v1_refined' -- Slowly Changing Dimension Type 2 (full history, versioned by start/end date).''')
-AS
-SELECT * FROM (SELECT
+SELECT
   customer_data_v1.customer_id AS customer_id,
   customer_data_v1.customer_name AS customer_name,
   customer_data_v1.email AS email,
@@ -60,71 +55,18 @@ INNER JOIN ${ref("customer_data_with_tags")} AS customer_data_with_tags ON CAST(
 customer_data_with_tags.Customer_Id
 LEFT JOIN ${ref("orders_data")} AS orders_data ON CAST(customer_data_v1.customer_id AS STRING)
 =
-orders_data.uid) LIMIT 0;
+orders_data.uid
+WHERE customer_data_with_tags.Country='India'
 
--- Step 2: SCD Type 2 -- close out the current row for any key whose
--- tracked columns changed. Only rows already marked "current"
--- (to_date IS NULL) are eligible for comparison, so historical rows
--- are never touched.
-MERGE `gcp-accelerator-380712.gold.customer_data_v1_refined` T
-USING (SELECT
-  customer_data_v1.customer_id AS customer_id,
-  customer_data_v1.customer_name AS customer_name,
-  customer_data_v1.email AS email,
-  customer_data_v1.is_active AS is_active,
-  customer_data_v1.signup_timestamp AS signup_timestamp,
-  customer_data_v1.account_balance AS account_balance,
-  customer_data_v1.tags AS tags,
-  customer_data_with_tags.Index AS Index,
-  customer_data_with_tags.Customer_Id AS Customer_Id,
-  customer_data_with_tags.First_Name AS First_Name,
-  customer_data_with_tags.Last_Name AS Last_Name,
-  orders_data.order_id AS order_id,
-  orders_data.order_date AS order_date,
-  orders_data.uid AS uid,
-  orders_data.amount AS amount,
-  orders_data.status AS status
-FROM ${ref("customer_data_v1")} AS customer_data_v1
-INNER JOIN ${ref("customer_data_with_tags")} AS customer_data_with_tags ON CAST(customer_data_v1.customer_id AS STRING)
-=
-customer_data_with_tags.Customer_Id
-LEFT JOIN ${ref("orders_data")} AS orders_data ON CAST(customer_data_v1.customer_id AS STRING)
-=
-orders_data.uid) S
-ON T.customer_id = S.customer_id AND T.Index = S.Index AND T.Customer_Id = S.Customer_Id AND T.order_id = S.order_id
-   AND T.to_date IS NULL
-WHEN MATCHED AND (T.customer_name IS DISTINCT FROM S.customer_name OR T.email IS DISTINCT FROM S.email OR T.is_active IS DISTINCT FROM S.is_active OR T.signup_timestamp IS DISTINCT FROM S.signup_timestamp OR T.account_balance IS DISTINCT FROM S.account_balance OR T.tags IS DISTINCT FROM S.tags OR T.First_Name IS DISTINCT FROM S.First_Name OR T.Last_Name IS DISTINCT FROM S.Last_Name OR T.order_date IS DISTINCT FROM S.order_date OR T.uid IS DISTINCT FROM S.uid OR T.amount IS DISTINCT FROM S.amount OR T.status IS DISTINCT FROM S.status) THEN
-  UPDATE SET T.to_date = CURRENT_DATE();
 
--- Step 3: SCD Type 2 -- insert a new current-version row for any key
--- that is brand new, or whose previous current row was just closed
--- out by Step 2 above.
-MERGE `gcp-accelerator-380712.gold.customer_data_v1_refined` T
-USING (SELECT
-  customer_data_v1.customer_id AS customer_id,
-  customer_data_v1.customer_name AS customer_name,
-  customer_data_v1.email AS email,
-  customer_data_v1.is_active AS is_active,
-  customer_data_v1.signup_timestamp AS signup_timestamp,
-  customer_data_v1.account_balance AS account_balance,
-  customer_data_v1.tags AS tags,
-  customer_data_with_tags.Index AS Index,
-  customer_data_with_tags.Customer_Id AS Customer_Id,
-  customer_data_with_tags.First_Name AS First_Name,
-  customer_data_with_tags.Last_Name AS Last_Name,
-  orders_data.order_id AS order_id,
-  orders_data.order_date AS order_date,
-  orders_data.uid AS uid,
-  orders_data.amount AS amount,
-  orders_data.status AS status
-FROM ${ref("customer_data_v1")} AS customer_data_v1
-INNER JOIN ${ref("customer_data_with_tags")} AS customer_data_with_tags ON CAST(customer_data_v1.customer_id AS STRING)
-=
-customer_data_with_tags.Customer_Id
-LEFT JOIN ${ref("orders_data")} AS orders_data ON CAST(customer_data_v1.customer_id AS STRING)
-=
-orders_data.uid) S
-ON T.customer_id = S.customer_id AND T.Index = S.Index AND T.Customer_Id = S.Customer_Id AND T.order_id = S.order_id
-   AND T.to_date IS NULL
-WHEN NOT MATCHED THEN
-  INSERT (customer_id, customer_name, email, is_active, signup_timestamp, account_balance, tags, Index, Customer_Id, First_Name, Last_Name, order_id, order_date, uid, amount, status) VALUES (S.customer_id, S.customer_name, S.email, S.is_active, S.signup_timestamp, S.account_balance, S.tags, S.Index, S.Customer_Id, S.First_Name, S.Last_Name, S.order_id, S.order_date, S.uid, S.amount, S.status)
+post_operations {
+  ${when(!incremental(),
+    `ALTER TABLE ${self()}
+    ADD PRIMARY KEY (
+      customer_id,
+      Index,
+      Customer_Id,
+      order_id
+    ) NOT ENFORCED`
+  )}
+}

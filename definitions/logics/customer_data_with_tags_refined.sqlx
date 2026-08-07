@@ -11,7 +11,14 @@ config {
     Customer_Id: "TODO: add a description for this column.",
     First_Name: "TODO: add a description for this column.",
     Last_Name: "TODO: add a description for this column.",
-    Company: "TODO: add a description for this column."
+    Company: "TODO: add a description for this column.",
+    City: "TODO: add a description for this column.",
+    Country: "TODO: add a description for this column.",
+    Phone_1: "TODO: add a description for this column.",
+    Phone_2: "TODO: add a description for this column.",
+    Email: "TODO: add a description for this column.",
+    Subscription_Date: "TODO: add a description for this column.",
+    Website: "TODO: add a description for this column."
   },
   description: "Gold table 'customer_data_with_tags_refined' -- full snapshot, rebuilt on every run."
 }
@@ -21,5 +28,12 @@ SELECT
   customer_data_with_tags.Customer_Id AS Customer_Id,
   customer_data_with_tags.First_Name AS First_Name,
   customer_data_with_tags.Last_Name AS Last_Name,
-  customer_data_with_tags.Company AS Company
+  customer_data_with_tags.Company AS Company,
+  customer_data_with_tags.City AS City,
+  customer_data_with_tags.Country AS Country,
+  customer_data_with_tags.Phone_1 AS Phone_1,
+  customer_data_with_tags.Phone_2 AS Phone_2,
+  customer_data_with_tags.Email AS Email,
+  customer_data_with_tags.Subscription_Date AS Subscription_Date,
+  customer_data_with_tags.Website AS Website
 FROM ${ref("customer_data_with_tags")} AS customer_data_with_tags

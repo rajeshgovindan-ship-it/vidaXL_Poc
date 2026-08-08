@@ -16,10 +16,11 @@ config {
 }
 
 SELECT
-  count(*) AS Customer_Id,
+  count(*) AS total_customer,
+  customer_data_with_tags.Customer_Id AS Customer_Id,
   customer_data_with_tags.Company AS Company,
   customer_data_with_tags.City AS City,
   customer_data_with_tags.Country AS Country
 FROM ${ref("customer_data_with_tags")} AS customer_data_with_tags
-GROUP BY customer_data_with_tags.Company, customer_data_with_tags.City, customer_data_with_tags.Country
-HAVING having count(*)  as total_customer>2
+GROUP BY customer_data_with_tags.Customer_Id,customer_data_with_tags.Company, customer_data_with_tags.City, customer_data_with_tags.Country
+HAVING count(*) > 2

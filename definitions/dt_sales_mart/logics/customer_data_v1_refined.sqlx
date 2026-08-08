@@ -8,34 +8,24 @@ config {
   uniqueKey: ["customer_id"],
   tags: ["dt_sales_mart"],
   columns: {
-    customer_id: "Calculation: CASE
-
-WHEN account_balance>1000 THEN 'Premium'
-
-WHEN account_balance>500 THEN 'Gold'
-
-ELSE 'Silver'
-
-END AS customer_segment",
-    customer_name: "TODO: add a description for this column.",
-    email: "TODO: add a description for this column.",
-    is_active: "TODO: add a description for this column.",
-    signup_timestamp: "TODO: add a description for this column.",
-    account_balance: "TODO: add a description for this column.",
-    Index: "TODO: add a description for this column.",
-    Customer_Id: "TODO: add a description for this column.",
-    First_Name: "TODO: add a description for this column.",
-    Last_Name: "TODO: add a description for this column.",
-    Company: "TODO: add a description for this column.",
-    order_id: "TODO: add a description for this column.",
-    order_date: "TODO: add a description for this column.",
-    uid: "TODO: add a description for this column.",
-    amount: "TODO: add a description for this column.",
-    status: "TODO: add a description for this column."
+    "customer_id": "Calculation: CASE  WHEN account_balance>1000 THEN 'Premium'  WHEN account_balance>500 THEN 'Gold'  ELSE 'Silver'  END AS customer_segment",
+    "customer_name": "TODO: add a description for this column.",
+    "email": "TODO: add a description for this column.",
+    "is_active": "TODO: add a description for this column.",
+    "signup_timestamp": "TODO: add a description for this column.",
+    "account_balance": "TODO: add a description for this column.",
+    "tags": "TODO: add a description for this column.",
+    "Index": "TODO: add a description for this column.",
+    "Customer_Id": "TODO: add a description for this column.",
+    "First_Name": "TODO: add a description for this column.",
+    "Last_Name": "TODO: add a description for this column.",
+    "Company": "TODO: add a description for this column.",
+    "City": "TODO: add a description for this column.",
+    "Country": "TODO: add a description for this column."
   },
   bigquery: {
     partitionBy: "DATE(signup_timestamp)",
-    clusterBy: ["customer_id", "customer_name"],
+    clusterBy: ["customer_id"],
   },
   description: "Gold table 'customer_data_v1_refined' -- Dataform-managed incremental load."
 }
@@ -55,23 +45,19 @@ END AS customer_id,
   customer_data_v1.is_active AS is_active,
   customer_data_v1.signup_timestamp AS signup_timestamp,
   customer_data_v1.account_balance AS account_balance,
+  customer_data_v1.tags AS tags,
   customer_data_with_tags.Index AS Index,
   customer_data_with_tags.Customer_Id AS customer_data_with_tags_Customer_Id,
   customer_data_with_tags.First_Name AS First_Name,
   customer_data_with_tags.Last_Name AS Last_Name,
   customer_data_with_tags.Company AS Company,
-  orders_data.order_id AS order_id,
-  orders_data.order_date AS order_date,
-  orders_data.uid AS uid,
-  orders_data.amount AS amount,
-  orders_data.status AS status
+  customer_data_with_tags.City AS City,
+  customer_data_with_tags.Country AS Country
 FROM ${ref("customer_data_v1")} AS customer_data_v1
 INNER JOIN ${ref("customer_data_with_tags")} AS customer_data_with_tags ON CAST(customer_data_v1.customer_id AS STRING)
 =
 customer_data_with_tags.Customer_Id
-LEFT JOIN ${ref("orders_data")} AS orders_data ON CAST(customer_data_v1.customer_id AS STRING)
-=
-orders_data.uid
+WHERE customer_data_with_tags.Country='India'
 
 
 post_operations {

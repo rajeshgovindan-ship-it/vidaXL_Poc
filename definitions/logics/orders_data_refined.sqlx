@@ -7,11 +7,11 @@ config {
   schema: "gold",
   tags: [],
   columns: {
-    order_id: "TODO: add a description for this column.",
-    order_date: "TODO: add a description for this column.",
-    uid: "TODO: add a description for this column.",
-    amount: "TODO: add a description for this column.",
-    status: "TODO: add a description for this column."
+    "order_id": "TODO: add a description for this column.",
+    "order_date": "TODO: add a description for this column.",
+    "uid": "TODO: add a description for this column.",
+    "amount": "TODO: add a description for this column.",
+    "status": "TODO: add a description for this column."
   },
   description: "Gold table 'orders_data_refined' -- full snapshot, rebuilt on every run."
 }

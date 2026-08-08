@@ -44,7 +44,8 @@ WHEN account_balance>500 THEN 'Gold'
 
 ELSE 'Silver'
 
-END AS customer_id,
+END AS customer_segment,
+  customer_data_v1.customer_name AS customer_id,
   customer_data_v1.customer_name AS customer_name,
   customer_data_v1.email AS email,
   customer_data_v1.is_active AS is_active,
@@ -53,13 +54,15 @@ END AS customer_id,
   customer_data_v1.tags AS tags,
   customer_data_with_tags.Index AS Index,
   customer_data_with_tags.Customer_Id AS customer_data_with_tags_Customer_Id,
-  CONCAT(First_Name,' ',Last_Name) AS First_Name,
+  customer_data_with_tags.Last_Name AS First_Name,
   customer_data_with_tags.Last_Name AS Last_Name,
+  CONCAT(First_Name,' ',Last_Name) AS full_name,
   customer_data_with_tags.Company AS Company,
   customer_data_with_tags.City AS City,
   customer_data_with_tags.Country AS Country,
   customer_data_with_tags.Phone_1 AS Phone_1,
-  COALESCE(Phone_1,Phone_2) AS Phone_2,
+  customer_data_with_tags.Phone_1 AS Phone_2,
+  COALESCE(Phone_1,Phone_2) AS Phone,
   customer_data_with_tags.Email AS customer_data_with_tags_Email,
   customer_data_with_tags.Subscription_Date AS Subscription_Date,
   customer_data_with_tags.Website AS Website

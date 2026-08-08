@@ -1,10 +1,10 @@
 config {
   type: "assertion",
   name: "assert_customer_data_v1_refined_unique_key",
-  description: "Uniqueness check for customer_data_v1_refined (order_id) -- all data quality checks are generated as standalone assertion files."
+  description: "Uniqueness check for customer_data_v1_refined (customer_id) -- all data quality checks are generated as standalone assertion files."
 }
 
-SELECT order_id, COUNT(*) AS row_count
+SELECT customer_id, COUNT(*) AS row_count
 FROM ${ref("customer_data_v1_refined")}
-GROUP BY order_id
+GROUP BY customer_id
 HAVING COUNT(*) > 1

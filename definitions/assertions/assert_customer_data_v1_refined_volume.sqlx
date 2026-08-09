@@ -1,13 +1,19 @@
 config {
   type: "assertion",
   name: "assert_customer_data_v1_refined_volume",
-  description: "Volume check for customer_data_v1_refined -- fails if the most recent DATE(signup_timestamp) loaded fewer than 50% of the average rows per period over the preceding 7. Catches a load that ran 'successfully' but produced far less data than normal."
+  description: "Volume check for customer_data_v1_refined -- fails if the most recent OVER (PARTITION BY customer_id
+        ORDER BY signup_timestamp DESC
+    ) AS customer_rank loaded fewer than 50% of the average rows per period over the preceding 7. Catches a load that ran 'successfully' but produced far less data than normal."
 }
 
 WITH per_period AS (
-  SELECT DATE(signup_timestamp) AS p, COUNT(*) AS n
+  SELECT OVER (PARTITION BY customer_id
+        ORDER BY signup_timestamp DESC
+    ) AS customer_rank AS p, COUNT(*) AS n
   FROM ${ref("customer_data_v1_refined")}
-  GROUP BY DATE(signup_timestamp)
+  GROUP BY OVER (PARTITION BY customer_id
+        ORDER BY signup_timestamp DESC
+    ) AS customer_rank
 ),
 latest AS (SELECT MAX(p) AS p FROM per_period),
 baseline AS (

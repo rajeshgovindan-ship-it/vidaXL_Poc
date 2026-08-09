@@ -7,28 +7,32 @@ config {
   schema: "gold",
   tags: [],
   columns: {
-    "uid": "TODO: add a description for this column.",
+    "order_id": "TODO: add a description for this column.",
+    "order_date": "TODO: add a description for this column.",
     "amount": "TODO: add a description for this column.",
     "status": "TODO: add a description for this column."
   },
   description: "Gold table 'orders_data_refined' -- full snapshot, rebuilt on every run."
 }
 
-WITH customer_orders  AS (
+WITH customer_orders AS (
   SELECT
-    COUNT(*) AS order_count, AS uid,
+    orders_data.order_id AS order_id,
+    COUNT(*) AS order_count,
+    orders_data.order_date AS order_date,
     orders_data.amount AS amount,
     orders_data.status AS status
   FROM ${ref("orders_data")} AS orders_data
-  WHERE status = 'COMPLETED'
-  GROUP BY orders_data.amount, orders_data.status
-  HAVING COUNT(*) >= 2
+  WHERE orders_data.status = 'COMPLETED'
+  GROUP BY orders_data.order_id, orders_data.order_date, orders_data.amount, orders_data.status
+  HAVING COUNT(*) >= 1
 )
 SELECT
+  customer_orders.order_date AS order_date,
   customer_orders.amount AS amount,
-  SUM(amount) AS total_amount,AVG(amount) AS avg_amount,
+  SUM(orders_data.amount) AS total_amount,AVG(orders_data.amount) AS avg_amount,
   customer_orders.status AS status,
-  customer_orders.uid AS uid
-FROM `customer_orders` AS customer_orders
-WHERE status = 'COMPLETED'
-GROUP BY customer_orders.amount, customer_orders.status, customer_orders.uid
+  customer_orders.order_id AS order_id
+FROM customer_orders AS customer_orders
+WHERE orders_data.status = 'COMPLETED'
+GROUP BY customer_orders.order_date, customer_orders.amount, customer_orders.status, customer_orders.order_id

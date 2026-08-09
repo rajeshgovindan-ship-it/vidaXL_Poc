@@ -7,38 +7,25 @@ config {
   schema: "gold",
   tags: [],
   columns: {
-    "customer_id": "Calculation: CASE     WHEN account_balance >= 10000 THEN 'PREMIUM'     WHEN account_balance >= 5000 THEN 'STANDARD'     ELSE 'BASIC' END AS customer_segment",
-    "customer_name": "Calculation: COALESCE(customer_name, 'UNKNOWN') AS customer_name_clean",
+    "customer_id": "TODO: add a description for this column.",
+    "customer_name": "TODO: add a description for this column.",
     "signup_timestamp": "TODO: add a description for this column.",
-    "account_balance": "Calculation: ROUND(account_balance, 2) AS account_balance_rounded"
-  },
-  bigquery: {
-    partitionBy: "DATE(signup_timestamp)",
-    clusterBy: ["customer_id"],
+    "account_balance": "TODO: add a description for this column."
   },
   description: "Gold table 'customer_data_v1_refined' -- full snapshot, rebuilt on every run."
 }
 
+WITH customer_base  AS (
+  SELECT
+    customer_data_v1.customer_id AS customer_id,
+    customer_data_v1.customer_name AS customer_name,
+    customer_data_v1.signup_timestamp AS signup_timestamp,
+    customer_data_v1.account_balance AS account_balance
+  FROM ${ref("customer_data_v1")} AS customer_data_v1
+)
 SELECT
-  customer_data_v1.customer_id AS customer_id,
-  CASE
-    WHEN account_balance >= 10000 THEN 'PREMIUM'
-    WHEN account_balance >= 5000 THEN 'STANDARD'
-    ELSE 'BASIC'
-END AS customer_segment,
-  customer_data_v1.customer_name AS customer_name,
-  COALESCE(customer_name, 'UNKNOWN') AS customer_name_clean,
-  customer_data_v1.signup_timestamp AS signup_timestamp,
-  customer_data_v1.account_balance AS account_balance,
-  ROUND(account_balance, 2) AS account_balance_rounded
-FROM ${ref("customer_data_v1")} AS customer_data_v1
-WHERE account_balance IS NOT NULL
-AND account_balance >= 0
-
-
-post_operations {
-  ALTER TABLE ${self()}
-  ADD PRIMARY KEY (
-    customer_id
-  ) NOT ENFORCED;
-}
+  customer_base.customer_name AS customer_name,
+  customer_base.signup_timestamp AS signup_timestamp,
+  customer_base.account_balance AS account_balance,
+  customer_base.customer_id AS customer_id
+FROM `customer_base` AS customer_base

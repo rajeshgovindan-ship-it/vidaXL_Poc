@@ -1,0 +1,9 @@
+config {
+  type: "assertion",
+  name: "assert_customer_data_v2_refined_volume",
+  description: "Volume check for customer_data_v2_refined -- fails if the table is empty. NOTE: no partition column is configured, so a period-over-period comparison is not possible; set partition_by to get the fuller check."
+}
+
+SELECT COUNT(*) AS actual_row_count
+FROM ${ref("customer_data_v2_refined")}
+HAVING COUNT(*) = 0

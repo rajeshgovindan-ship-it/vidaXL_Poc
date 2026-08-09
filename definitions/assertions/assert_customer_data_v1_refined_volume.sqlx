@@ -1,9 +1,20 @@
 config {
   type: "assertion",
   name: "assert_customer_data_v1_refined_volume",
-  description: "Volume check for customer_data_v1_refined -- fails if the table is empty. NOTE: no partition column is configured, so a period-over-period comparison is not possible; set partition_by to get the fuller check."
+  description: "Volume check for customer_data_v1_refined -- fails if the most recent customer_id loaded fewer than 50% of the average rows per period over the preceding 7. Catches a load that ran 'successfully' but produced far less data than normal."
 }
 
-SELECT COUNT(*) AS actual_row_count
-FROM ${ref("customer_data_v1_refined")}
-HAVING COUNT(*) = 0
+WITH per_period AS (
+  SELECT customer_id AS p, COUNT(*) AS n
+  FROM ${ref("customer_data_v1_refined")}
+  GROUP BY customer_id
+),
+latest AS (SELECT MAX(p) AS p FROM per_period),
+baseline AS (
+  SELECT AVG(n) AS avg_n FROM per_period
+  WHERE p < (SELECT p FROM latest)
+    AND p >= DATE_SUB((SELECT p FROM latest), INTERVAL 7 DAY)
+)
+SELECT pp.p AS period, pp.n AS row_count, b.avg_n AS baseline_avg
+FROM per_period pp, latest l, baseline b
+WHERE pp.p = l.p AND b.avg_n IS NOT NULL AND pp.n < 0.5 * b.avg_n

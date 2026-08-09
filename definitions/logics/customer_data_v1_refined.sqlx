@@ -15,12 +15,15 @@ config {
     "account_balance": "TODO: add a description for this column.",
     "tags": "TODO: add a description for this column."
   },
+  bigquery: {
+    partitionBy: "customer_id",
+  },
   description: "Gold table 'customer_data_v1_refined' -- full snapshot, rebuilt on every run."
 }
 
 SELECT
   customer_data_v1.customer_id AS customer_id,
-  ROW_NUMBER() OVER (PARTITION BY over(customer_id) ORDER BY signup_timestamp DESC) AS rn,
+  ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY signup_timestamp DESC) AS rn,
   customer_data_v1.customer_name AS customer_name,
   customer_data_v1.email AS email,
   customer_data_v1.is_active AS is_active,

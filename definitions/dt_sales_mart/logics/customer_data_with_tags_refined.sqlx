@@ -8,14 +8,14 @@ config {
   tags: ["dt_sales_mart"],
   columns: {
     "Index": "TODO: add a description for this column.",
-    "Customer_Id": "Calculation: COALESCE(Phone_1, Phone_2) AS phone_number",
+    "Customer_Id": "TODO: add a description for this column.",
     "First_Name": "TODO: add a description for this column.",
     "Last_Name": "Calculation: COALESCE(First_Name, '') || ' ' || COALESCE(Last_Name, '') AS full_name",
     "Company": "TODO: add a description for this column.",
     "City": "TODO: add a description for this column.",
     "Country": "TODO: add a description for this column.",
     "Phone_1": "TODO: add a description for this column.",
-    "Phone_2": "TODO: add a description for this column.",
+    "Phone_2": "Calculation: COALESCE(Phone_1, Phone_2) AS phone_number",
     "Email": "Calculation: LOWER(TRIM(Email)) AS email_normalized",
     "Subscription_Date": "TODO: add a description for this column.",
     "Website": "TODO: add a description for this column."
@@ -26,7 +26,6 @@ config {
 SELECT
   customer_data_with_tags.Index AS Index,
   customer_data_with_tags.Customer_Id AS Customer_Id,
-  COALESCE(Phone_1, Phone_2) AS phone_number,
   customer_data_with_tags.First_Name AS First_Name,
   customer_data_with_tags.Last_Name AS Last_Name,
   COALESCE(First_Name, '') || ' ' || COALESCE(Last_Name, '') AS full_name,
@@ -35,6 +34,7 @@ SELECT
   customer_data_with_tags.Country AS Country,
   customer_data_with_tags.Phone_1 AS Phone_1,
   customer_data_with_tags.Phone_2 AS Phone_2,
+  COALESCE(Phone_1, Phone_2) AS phone_number,
   customer_data_with_tags.Email AS Email,
   LOWER(TRIM(Email)) AS email_normalized,
   customer_data_with_tags.Subscription_Date AS Subscription_Date,

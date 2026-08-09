@@ -1,0 +1,20 @@
+config {
+  type: "assertion",
+  name: "assert_customer_data_with_tags_refined_volume",
+  description: "Volume check for customer_data_with_tags_refined -- fails if the most recent DATE(Subscription_Date) loaded fewer than 50% of the average rows per period over the preceding 7. Catches a load that ran 'successfully' but produced far less data than normal."
+}
+
+WITH per_period AS (
+  SELECT DATE(Subscription_Date) AS p, COUNT(*) AS n
+  FROM ${ref("customer_data_with_tags_refined")}
+  GROUP BY DATE(Subscription_Date)
+),
+latest AS (SELECT MAX(p) AS p FROM per_period),
+baseline AS (
+  SELECT AVG(n) AS avg_n FROM per_period
+  WHERE p < (SELECT p FROM latest)
+    AND p >= DATE_SUB((SELECT p FROM latest), INTERVAL 7 DAY)
+)
+SELECT pp.p AS period, pp.n AS row_count, b.avg_n AS baseline_avg
+FROM per_period pp, latest l, baseline b
+WHERE pp.p = l.p AND b.avg_n IS NOT NULL AND pp.n < 0.5 * b.avg_n

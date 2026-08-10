@@ -7,17 +7,19 @@ config {
   schema: "gold",
   tags: ["dt_sales_mart"],
   columns: {
-    "customer_id": "TODO: add a description for this column.",
+    "customer_id": "Calculation: COUNT(*) AS total_customer",
     "customer_name": "TODO: add a description for this column.",
-    "signup_timestamp": "TODO: add a description for this column.",
-    "account_balance": "TODO: add a description for this column."
+    "account_balance": "Calculation: SUM(account_balance) AS total_sales,AVG(account_balance) AS avg_order_value"
   },
   description: "Gold table 'customer_data_v1_refined' -- full snapshot, rebuilt on every run."
 }
 
 SELECT
   customer_data_v1.customer_id AS customer_id,
+  COUNT(*) AS total_customer,
   customer_data_v1.customer_name AS customer_name,
-  customer_data_v1.signup_timestamp AS signup_timestamp,
-  customer_data_v1.account_balance AS account_balance
+  customer_data_v1.account_balance AS account_balance,
+  SUM(account_balance) AS total_sales,AVG(account_balance) AS avg_order_value
 FROM ${ref("customer_data_v1")} AS customer_data_v1
+GROUP BY customer_data_v1.customer_id, customer_data_v1.customer_name, customer_data_v1.account_balance
+HAVING COUNT(*) > 5

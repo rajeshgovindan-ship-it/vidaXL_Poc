@@ -20,3 +20,4 @@ SELECT
   customer_data_v1.customer_name AS customer_name,
   customer_data_v1.account_balance AS account_balance
 FROM ${ref("customer_data_v1")} AS customer_data_v1
+QUALIFY rn=1

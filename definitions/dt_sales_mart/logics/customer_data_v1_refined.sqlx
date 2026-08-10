@@ -14,7 +14,12 @@ config {
     "Index": "TODO: add a description for this column.",
     "Customer_Id": "TODO: add a description for this column.",
     "First_Name": "TODO: add a description for this column.",
-    "Last_Name": "TODO: add a description for this column."
+    "Last_Name": "TODO: add a description for this column.",
+    "order_id": "TODO: add a description for this column.",
+    "order_date": "TODO: add a description for this column.",
+    "uid": "TODO: add a description for this column.",
+    "amount": "TODO: add a description for this column.",
+    "status": "TODO: add a description for this column."
   },
   description: "Gold table 'customer_data_v1_refined' -- full snapshot, rebuilt on every run."
 }
@@ -27,7 +32,14 @@ SELECT
   customer_data_with_tags.Index AS Index,
   customer_data_with_tags.Customer_Id AS customer_data_with_tags_Customer_Id,
   customer_data_with_tags.First_Name AS First_Name,
-  customer_data_with_tags.Last_Name AS Last_Name
+  customer_data_with_tags.Last_Name AS Last_Name,
+  orders_data.order_id AS order_id,
+  orders_data.order_date AS order_date,
+  orders_data.uid AS uid,
+  orders_data.amount AS amount,
+  orders_data.status AS status
 FROM ${ref("customer_data_v1")} AS customer_data_v1
 INNER JOIN ${ref("customer_data_with_tags")} AS customer_data_with_tags ON customer_data_v1.customer_id =
 SAFE_CAST(customer_data_with_tags.Customer_Id AS INT64)
+LEFT JOIN ${ref("orders_data")} AS orders_data ON customer_data_with_tags.Customer_Id =
+orders_data.order_id

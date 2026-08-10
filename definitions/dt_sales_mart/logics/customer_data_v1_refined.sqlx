@@ -8,8 +8,7 @@ config {
   tags: ["dt_sales_mart"],
   columns: {
     "customer_id": "Calculation: COUNT(*) AS total_customer",
-    "customer_name": "TODO: add a description for this column.",
-    "account_balance": "Calculation: SUM(account_balance) AS total_sales,AVG(account_balance) AS avg_order_value"
+    "customer_name": "TODO: add a description for this column."
   },
   description: "Gold table 'customer_data_v1_refined' -- full snapshot, rebuilt on every run."
 }
@@ -17,9 +16,7 @@ config {
 SELECT
   customer_data_v1.customer_id AS customer_id,
   COUNT(*) AS total_customer,
-  customer_data_v1.customer_name AS customer_name,
-  customer_data_v1.account_balance AS account_balance,
-  SUM(account_balance) AS total_sales,AVG(account_balance) AS avg_order_value
+  customer_data_v1.customer_name AS customer_name
 FROM ${ref("customer_data_v1")} AS customer_data_v1
-GROUP BY customer_data_v1.customer_id, customer_data_v1.customer_name, customer_data_v1.account_balance
+GROUP BY customer_data_v1.customer_id, customer_data_v1.customer_name
 HAVING COUNT(*) > 5

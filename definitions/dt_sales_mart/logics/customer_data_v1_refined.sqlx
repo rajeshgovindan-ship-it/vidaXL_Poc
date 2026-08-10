@@ -10,55 +10,22 @@ config {
     "customer_id": "TODO: add a description for this column.",
     "customer_name": "TODO: add a description for this column.",
     "signup_timestamp": "TODO: add a description for this column.",
-    "account_balance": "TODO: add a description for this column.",
-    "Index": "TODO: add a description for this column.",
-    "Customer_Id": "TODO: add a description for this column.",
-    "First_Name": "TODO: add a description for this column.",
-    "Last_Name": "TODO: add a description for this column.",
-    "order_id": "TODO: add a description for this column.",
-    "order_date": "TODO: add a description for this column.",
-    "uid": "TODO: add a description for this column.",
-    "amount": "TODO: add a description for this column.",
-    "status": "TODO: add a description for this column."
+    "account_balance": "TODO: add a description for this column."
   },
   description: "Gold table 'customer_data_v1_refined' -- full snapshot, rebuilt on every run."
 }
 
 WITH customer_base  AS (
   SELECT
-    customer_data_v1.customer_id AS customer_id
+    customer_data_v1.customer_id AS customer_id,
+    customer_data_v1.customer_name AS customer_name,
+    customer_data_v1.signup_timestamp AS signup_timestamp,
+    customer_data_v1.account_balance AS account_balance
   FROM ${ref("customer_data_v1")} AS customer_data_v1
-),
-customer_tags  AS (
-  SELECT
-    customer_data_with_tags.Index AS Index
-  FROM ${ref("customer_data_with_tags")} AS customer_data_with_tags
-),
-orders_info AS (
-  SELECT
-    orders_data.order_id AS order_id,
-    orders_data.customer_name AS customer_name,
-    orders_data.signup_timestamp AS signup_timestamp,
-    orders_data.account_balance AS account_balance,
-    orders_data.Customer_Id AS Customer_Id,
-    orders_data.First_Name AS First_Name,
-    orders_data.Last_Name AS Last_Name,
-    orders_data.order_date AS order_date,
-    orders_data.uid AS uid,
-    orders_data.amount AS amount,
-    orders_data.status AS status
-  FROM ${ref("orders_data")} AS orders_data
 )
 SELECT
-  orders_info.customer_name AS customer_name,
-  orders_info.signup_timestamp AS signup_timestamp,
-  orders_info.account_balance AS account_balance,
-  orders_info.Customer_Id AS Customer_Id,
-  orders_info.First_Name AS First_Name,
-  orders_info.Last_Name AS Last_Name,
-  orders_info.order_date AS order_date,
-  orders_info.uid AS uid,
-  orders_info.amount AS amount,
-  orders_info.status AS status,
-  orders_info.order_id AS order_id
-FROM orders_info AS orders_info
+  customer_base.customer_name AS customer_name,
+  customer_base.signup_timestamp AS signup_timestamp,
+  customer_base.account_balance AS account_balance,
+  customer_base.customer_id AS customer_id
+FROM `customer_base` AS customer_base

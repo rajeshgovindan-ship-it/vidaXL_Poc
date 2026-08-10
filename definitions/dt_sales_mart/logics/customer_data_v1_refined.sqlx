@@ -3,7 +3,7 @@
 -- Tags: dt_sales_mart
 -- Idempotent via ${ref()} + Dataform incremental/operations semantics
 config {
-  type: "table",
+  type: "incremental",
   schema: "gold",
   tags: ["dt_sales_mart"],
   columns: {
@@ -12,7 +12,7 @@ config {
     "signup_timestamp": "TODO: add a description for this column.",
     "account_balance": "TODO: add a description for this column."
   },
-  description: "Gold table 'customer_data_v1_refined' -- full snapshot, rebuilt on every run."
+  description: "Gold table 'customer_data_v1_refined' -- Dataform-managed incremental load."
 }
 
 SELECT
@@ -21,3 +21,6 @@ SELECT
   customer_data_v1.signup_timestamp AS signup_timestamp,
   customer_data_v1.account_balance AS account_balance
 FROM ${ref("customer_data_v1")} AS customer_data_v1
+${when(incremental(),
+  `WHERE signup_timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 1 DAY)`
+)}

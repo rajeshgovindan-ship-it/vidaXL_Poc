@@ -9,29 +9,35 @@ config {
   columns: {
     "customer_id": "Calculation: COUNT(*) AS total_customer",
     "customer_name": "TODO: add a description for this column.",
-    "total_sales": "TODO: add a description for this column.",
-    "avg_order_value": "TODO: add a description for this column."
+    "total_sales": "Calculation: SUM(account_balance) AS total_sales",
+    "avg_order_value": "Calculation: AVG(account_balance) AS avg_order_value",
+    "Index": "TODO: add a description for this column.",
+    "Customer_Id": "TODO: add a description for this column.",
+    "First_Name": "TODO: add a description for this column.",
+    "Last_Name": "TODO: add a description for this column."
   },
   description: "Gold table 'customer_data_v1_refined' -- full snapshot, rebuilt on every run."
 }
 
-WITH customer_base AS (
+WITH customer_tags AS (
   SELECT
-    customer_data_v1.customer_id AS customer_id,
-    COUNT(*) AS total_customer,
-    customer_data_v1.customer_name AS customer_name,
-    SUM(account_balance) AS total_sales,
-    AVG(account_balance) AS avg_order_value
-  FROM ${ref("customer_data_v1")} AS customer_data_v1
-  GROUP BY customer_data_v1.customer_id, customer_data_v1.customer_name
-  HAVING count(*) >= 1
+    customer_data_with_tags.Index AS Index,
+    customer_data_with_tags.Customer_Id AS Customer_Id,
+    customer_data_with_tags.First_Name AS First_Name,
+    customer_data_with_tags.Last_Name AS Last_Name
+  FROM ${ref("customer_data_with_tags")} AS customer_data_with_tags
 )
 SELECT
-  customer_base.customer_id AS customer_id,
+  customer_data_v1.customer_id AS customer_id,
   COUNT(*) AS total_customer,
-  customer_base.customer_name AS customer_name,
-  customer_base.total_sales AS total_sales,
-  customer_base.avg_order_value AS avg_order_value
-FROM customer_base AS customer_base
-GROUP BY customer_base.customer_id, customer_base.customer_name, customer_base.total_sales, customer_base.avg_order_value
+  customer_data_v1.customer_name AS customer_name,
+  SUM(account_balance) AS total_sales,
+  AVG(account_balance) AS avg_order_value,
+  customer_tags.Index AS Index,
+  customer_tags.First_Name AS First_Name,
+  customer_tags.Last_Name AS Last_Name
+FROM ${ref("customer_data_v1")} AS customer_data_v1
+INNER JOIN customer_tags AS customer_tags ON customer_data_v1.customer_id =
+SAFE_CAST(customer_data_with_tags.Customer_Id AS INT64)
+GROUP BY customer_data_v1.customer_id, customer_data_v1.customer_name, customer_tags.Index, customer_tags.First_Name, customer_tags.Last_Name
 HAVING count(*) >= 1

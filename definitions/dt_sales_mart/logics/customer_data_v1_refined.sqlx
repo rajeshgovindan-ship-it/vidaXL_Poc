@@ -7,11 +7,8 @@ config {
   schema: "gold",
   tags: ["dt_sales_mart"],
   columns: {
-    "customer_id": "Calculation: CASE        WHEN account_balance >= 10000 THEN 'PREMIUM'         WHEN account_balance >= 5000 THEN 'STANDARD'         ELSE 'BASIC'     END AS customer_segment",
-    "customer_name": "Calculation: COALESCE(customer_name, 'UNKNOWN') AS customer_name_clean",
-    "email": "Calculation: ROUND(account_balance, 2) AS account_balance_rounded",
-    "is_active": "TODO: add a description for this column.",
-    "signup_timestamp": "TODO: add a description for this column.",
+    "customer_id": "TODO: add a description for this column.",
+    "customer_name": "TODO: add a description for this column.",
     "account_balance": "TODO: add a description for this column.",
     "tags": "TODO: add a description for this column."
   },
@@ -20,22 +17,10 @@ config {
 
 SELECT
   customer_data_v1.customer_id AS customer_id,
-  CASE
-       WHEN account_balance >= 10000 THEN 'PREMIUM'
-        WHEN account_balance >= 5000 THEN 'STANDARD'
-        ELSE 'BASIC'
-    END AS customer_segment,
   customer_data_v1.customer_name AS customer_name,
-  COALESCE(customer_name, 'UNKNOWN') AS customer_name_clean,
-  customer_data_v1.email AS email,
-  ROUND(account_balance, 2) AS account_balance_rounded,
-  customer_data_v1.is_active AS is_active,
-  customer_data_v1.signup_timestamp AS signup_timestamp,
   customer_data_v1.account_balance AS account_balance,
   customer_data_v1.tags AS tags
 FROM ${ref("customer_data_v1")} AS customer_data_v1
-WHERE account_balance IS NOT NULL
-  AND account_balance >= 0
 
 
 post_operations {

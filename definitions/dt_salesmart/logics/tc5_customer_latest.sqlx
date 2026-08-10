@@ -8,14 +8,14 @@ config {
   uniqueKey: ["Customer_Id"],
   tags: ["dt_salesmart", "tc5_customer_latest", "gold", "daily"],
   columns: {
-    Customer_Id: "Customer id.",
-    First_Name: "First name.",
-    Last_Name: "Last name.",
-    Company: "Company.",
-    City: "City.",
-    Country: "Country.",
-    Email: "Email.",
-    Subscription_Date: "Sub date."
+    "Customer_Id": "Customer id.",
+    "First_Name": "First name.",
+    "Last_Name": "Last name.",
+    "Company": "Company.",
+    "City": "City.",
+    "Country": "Country.",
+    "Email": "Email.",
+    "Subscription_Date": "Sub date."
   },
   bigquery: {
     partitionBy: "Subscription_Date",

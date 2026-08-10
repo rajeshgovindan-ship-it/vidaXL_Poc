@@ -8,17 +8,17 @@ config {
   uniqueKey: ["uid"],
   tags: ["dt_salesmart", "tc4_customer_spend_rank", "gold", "daily"],
   columns: {
-    order_id: "Order id.",
-    uid: "Customer id.",
-    amount: "Amount.",
-    status: "Status.",
-    order_date: "Order date (DATE). -- Calculation: PARSE_DATE('%Y-%m-%d', order_date)",
-    total_spend: "Spend.",
-    order_cnt: "Orders.",
-    last_order_date: "Last order date.",
-    country: "Country.",
-    spend_rank: "Rank.",
-    spend_tier: "Tier."
+    "order_id": "Order id.",
+    "uid": "Customer id.",
+    "amount": "Amount.",
+    "status": "Status.",
+    "order_date": "Order date (DATE). -- Calculation: PARSE_DATE('%Y-%m-%d', order_date)",
+    "total_spend": "Spend.",
+    "order_cnt": "Orders.",
+    "last_order_date": "Last order date.",
+    "country": "Country.",
+    "spend_rank": "Rank.",
+    "spend_tier": "Tier."
   },
   bigquery: {
     partitionBy: "last_order_date",

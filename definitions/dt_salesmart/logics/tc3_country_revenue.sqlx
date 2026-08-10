@@ -7,9 +7,9 @@ config {
   schema: "gold",
   tags: ["dt_salesmart", "tc3_country_revenue", "gold", "daily"],
   columns: {
-    country: "Country.",
-    revenue: "Total revenue. -- Calculation: SUM(amount)",
-    order_cnt: "Order count. -- Calculation: COUNT(DISTINCT order_id)"
+    "country": "Country.",
+    "revenue": "Total revenue. -- Calculation: SUM(amount)",
+    "order_cnt": "Order count. -- Calculation: COUNT(DISTINCT order_id)"
   },
   description: "TC3 LEFT JOIN + GROUP BY + HAVING."
 }

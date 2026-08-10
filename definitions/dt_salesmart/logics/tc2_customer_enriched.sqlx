@@ -7,11 +7,11 @@ config {
   schema: "gold",
   tags: ["dt_salesmart", "tc2_customer_enriched", "gold", "daily"],
   columns: {
-    customer_id: "Unique id.",
-    customer_name: "Name.",
-    signup_timestamp: "Signup ts.",
-    country: "Country.",
-    city: "City."
+    "customer_id": "Unique id.",
+    "customer_name": "Name.",
+    "signup_timestamp": "Signup ts.",
+    "country": "Country.",
+    "city": "City."
   },
   bigquery: {
     partitionBy: "DATE(signup_timestamp)",

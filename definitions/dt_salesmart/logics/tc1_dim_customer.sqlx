@@ -7,12 +7,12 @@ config {
   schema: "gold",
   tags: ["dt_salesmart", "tc1_dim_customer", "gold", "daily"],
   columns: {
-    customer_id: "Unique id.",
-    customer_name: "Name.",
-    email: "Email.",
-    is_active: "Active flag.",
-    signup_timestamp: "Signup ts.",
-    account_balance: "Balance."
+    "customer_id": "Unique id.",
+    "customer_name": "Name.",
+    "email": "Email.",
+    "is_active": "Active flag.",
+    "signup_timestamp": "Signup ts.",
+    "account_balance": "Balance."
   },
   bigquery: {
     partitionBy: "DATE(signup_timestamp)",

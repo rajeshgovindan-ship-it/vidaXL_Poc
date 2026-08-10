@@ -7,39 +7,40 @@ config {
   schema: "gold",
   tags: ["dt_sales_mart"],
   columns: {
-    "customer_id": "TODO: add a description for this column.",
-    "customer_name": "TODO: add a description for this column.",
+    "customer_id": "Calculation: CASE        WHEN account_balance >= 10000 THEN 'PREMIUM'         WHEN account_balance >= 5000 THEN 'STANDARD'         ELSE 'BASIC'     END AS customer_segment",
+    "customer_name": "Calculation: COALESCE(customer_name, 'UNKNOWN') AS customer_name_clean",
+    "email": "Calculation: ROUND(account_balance, 2) AS account_balance_rounded",
+    "is_active": "TODO: add a description for this column.",
     "signup_timestamp": "TODO: add a description for this column.",
     "account_balance": "TODO: add a description for this column.",
-    "Index": "TODO: add a description for this column.",
-    "Customer_Id": "TODO: add a description for this column.",
-    "First_Name": "TODO: add a description for this column.",
-    "Last_Name": "TODO: add a description for this column.",
-    "order_id": "TODO: add a description for this column.",
-    "order_date": "TODO: add a description for this column.",
-    "uid": "TODO: add a description for this column.",
-    "amount": "TODO: add a description for this column.",
-    "status": "TODO: add a description for this column."
+    "tags": "TODO: add a description for this column."
   },
   description: "Gold table 'customer_data_v1_refined' -- full snapshot, rebuilt on every run."
 }
 
 SELECT
   customer_data_v1.customer_id AS customer_id,
+  CASE
+       WHEN account_balance >= 10000 THEN 'PREMIUM'
+        WHEN account_balance >= 5000 THEN 'STANDARD'
+        ELSE 'BASIC'
+    END AS customer_segment,
   customer_data_v1.customer_name AS customer_name,
+  COALESCE(customer_name, 'UNKNOWN') AS customer_name_clean,
+  customer_data_v1.email AS email,
+  ROUND(account_balance, 2) AS account_balance_rounded,
+  customer_data_v1.is_active AS is_active,
   customer_data_v1.signup_timestamp AS signup_timestamp,
   customer_data_v1.account_balance AS account_balance,
-  customer_data_with_tags.Index AS Index,
-  customer_data_with_tags.Customer_Id AS customer_data_with_tags_Customer_Id,
-  customer_data_with_tags.First_Name AS First_Name,
-  customer_data_with_tags.Last_Name AS Last_Name,
-  orders_data.order_id AS order_id,
-  orders_data.order_date AS order_date,
-  orders_data.uid AS uid,
-  orders_data.amount AS amount,
-  orders_data.status AS status
+  customer_data_v1.tags AS tags
 FROM ${ref("customer_data_v1")} AS customer_data_v1
-INNER JOIN ${ref("customer_data_with_tags")} AS customer_data_with_tags ON customer_data_v1.customer_id =
-SAFE_CAST(customer_data_with_tags.Customer_Id AS INT64)
-LEFT JOIN ${ref("orders_data")} AS orders_data ON customer_data_with_tags.Customer_Id =
-orders_data.order_id
+WHERE account_balance IS NOT NULL
+  AND account_balance >= 0
+
+
+post_operations {
+  ALTER TABLE ${self()}
+  ADD PRIMARY KEY (
+    customer_id
+  ) NOT ENFORCED;
+}

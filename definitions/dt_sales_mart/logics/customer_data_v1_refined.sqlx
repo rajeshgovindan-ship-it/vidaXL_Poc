@@ -10,22 +10,24 @@ config {
     "customer_id": "TODO: add a description for this column.",
     "customer_name": "TODO: add a description for this column.",
     "signup_timestamp": "TODO: add a description for this column.",
-    "account_balance": "TODO: add a description for this column."
+    "account_balance": "TODO: add a description for this column.",
+    "Index": "TODO: add a description for this column.",
+    "Customer_Id": "TODO: add a description for this column.",
+    "First_Name": "TODO: add a description for this column.",
+    "Last_Name": "TODO: add a description for this column."
   },
   description: "Gold table 'customer_data_v1_refined' -- full snapshot, rebuilt on every run."
 }
 
-WITH customer_base  AS (
-  SELECT
-    customer_data_v1.customer_id AS customer_id,
-    customer_data_v1.customer_name AS customer_name,
-    customer_data_v1.signup_timestamp AS signup_timestamp,
-    customer_data_v1.account_balance AS account_balance
-  FROM ${ref("customer_data_v1")} AS customer_data_v1
-)
 SELECT
-  customer_base.customer_name AS customer_name,
-  customer_base.signup_timestamp AS signup_timestamp,
-  customer_base.account_balance AS account_balance,
-  customer_base.customer_id AS customer_id
-FROM `customer_base` AS customer_base
+  customer_data_v1.customer_id AS customer_id,
+  customer_data_v1.customer_name AS customer_name,
+  customer_data_v1.signup_timestamp AS signup_timestamp,
+  customer_data_v1.account_balance AS account_balance,
+  customer_data_with_tags.Index AS Index,
+  customer_data_with_tags.Customer_Id AS customer_data_with_tags_Customer_Id,
+  customer_data_with_tags.First_Name AS First_Name,
+  customer_data_with_tags.Last_Name AS Last_Name
+FROM ${ref("customer_data_v1")} AS customer_data_v1
+INNER JOIN ${ref("customer_data_with_tags")} AS customer_data_with_tags ON customer_data_v1.customer_id =
+SAFE_CAST(customer_data_with_tags.Customer_Id AS INT64)

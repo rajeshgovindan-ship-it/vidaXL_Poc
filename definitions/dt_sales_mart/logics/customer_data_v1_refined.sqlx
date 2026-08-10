@@ -9,8 +9,8 @@ config {
   columns: {
     "customer_id": "TODO: add a description for this column.",
     "customer_name": "TODO: add a description for this column.",
-    "account_balance": "TODO: add a description for this column.",
-    "tags": "TODO: add a description for this column."
+    "signup_timestamp": "TODO: add a description for this column.",
+    "account_balance": "TODO: add a description for this column."
   },
   description: "Gold table 'customer_data_v1_refined' -- full snapshot, rebuilt on every run."
 }
@@ -18,14 +18,6 @@ config {
 SELECT
   customer_data_v1.customer_id AS customer_id,
   customer_data_v1.customer_name AS customer_name,
-  customer_data_v1.account_balance AS account_balance,
-  customer_data_v1.tags AS tags
+  customer_data_v1.signup_timestamp AS signup_timestamp,
+  customer_data_v1.account_balance AS account_balance
 FROM ${ref("customer_data_v1")} AS customer_data_v1
-
-
-post_operations {
-  ALTER TABLE ${self()}
-  ADD PRIMARY KEY (
-    customer_id
-  ) NOT ENFORCED;
-}

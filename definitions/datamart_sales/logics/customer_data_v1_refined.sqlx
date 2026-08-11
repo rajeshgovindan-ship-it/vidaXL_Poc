@@ -37,7 +37,7 @@ orders_aggregated AS (
     AVG(amount) AS average_order_amount,
     COUNT(*) AS order_count
   FROM ${ref("orders_data")} AS orders_data
-  WHERE status = 'COMPLETED'
+  WHERE status = 'COMPLETED' AND COALESCE(o.total_order_amount, 0) AS total_order_amount AND COALESCE(o.average_order_amount, 0) AS average_order_amount AND COALESCE(o.order_count, 0) AS order_count
   GROUP BY orders_data.order_id, orders_data.uid
 )
 SELECT

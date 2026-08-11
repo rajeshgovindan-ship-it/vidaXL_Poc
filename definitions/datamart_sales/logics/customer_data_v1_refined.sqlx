@@ -22,6 +22,7 @@ WITH customer_base AS (
     customer_data_v1.signup_timestamp AS signup_timestamp,
     customer_data_v1.account_balance AS account_balance
   FROM ${ref("customer_data_v1")} AS customer_data_v1
+  WHERE account_balance >= 0
 )
 SELECT
   customer_base.customer_id AS customer_id,

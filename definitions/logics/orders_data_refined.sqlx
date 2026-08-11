@@ -24,6 +24,7 @@ WITH orders_aggregated AS (
     AVG(amount) AS average_order_amount,
     COUNT(*) AS order_count
   FROM ${ref("orders_data")} AS orders_data
+  WHERE status = 'COMPLETED'
   GROUP BY orders_data.order_id, orders_data.uid
 )
 SELECT

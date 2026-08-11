@@ -9,7 +9,8 @@ config {
   columns: {
     "order_id": "TODO: add a description for this column.",
     "total_amount": "TODO: add a description for this column.",
-    "avg_amount": "TODO: add a description for this column."
+    "avg_amount": "TODO: add a description for this column.",
+    "order_count": "TODO: add a description for this column."
   },
   description: "Gold table 'orders_data_refined' -- full snapshot, rebuilt on every run."
 }
@@ -19,7 +20,8 @@ WITH customer_orders AS (
     orders_data.order_id AS order_id,
     COUNT(*) AS order_count,
     SUM(amount) AS total_amount,
-    AVG(amount) AS avg_amount
+    AVG(amount) AS avg_amount,
+    orders_data.order_id AS orders_data_order_count
   FROM ${ref("orders_data")} AS orders_data
   WHERE status = 'COMPLETED'
   GROUP BY orders_data.order_id
@@ -28,5 +30,6 @@ WITH customer_orders AS (
 SELECT
   customer_orders.order_id AS order_id,
   customer_orders.total_amount AS total_amount,
-  customer_orders.avg_amount AS avg_amount
+  customer_orders.avg_amount AS avg_amount,
+  customer_orders.order_count AS order_count
 FROM customer_orders AS customer_orders

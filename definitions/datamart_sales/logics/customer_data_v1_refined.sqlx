@@ -13,9 +13,9 @@ config {
     "account_balance": "TODO: add a description for this column.",
     "order_id": "TODO: add a description for this column.",
     "uid": "TODO: add a description for this column.",
-    "total_order_amount": "TODO: add a description for this column.",
-    "average_order_amount": "TODO: add a description for this column.",
-    "order_count": "TODO: add a description for this column."
+    "total_order_amount": "Calculation: COALESCE(total_order_amount, 0) AS total_order_amount",
+    "average_order_amount": "Calculation: COALESCE(average_order_amount, 0) AS average_order_amount",
+    "order_count": "Calculation: COALESCE(order_count, 0) AS order_count"
   },
   description: "Gold table 'customer_data_v1_refined' -- full snapshot, rebuilt on every run."
 }
@@ -41,14 +41,13 @@ orders_aggregated AS (
   GROUP BY orders_data.order_id, orders_data.uid
 )
 SELECT
-  customer_base.customer_id AS customer_id,
+  COALESCE(total_order_amount, 0) AS total_order_amount,
+  COALESCE(average_order_amount, 0) AS average_order_amount,
+  COALESCE(order_count, 0) AS order_count,
   orders_aggregated.order_id AS order_id,
+  customer_base.customer_id AS customer_id,
   customer_base.customer_name AS customer_name,
   customer_base.signup_timestamp AS signup_timestamp,
   customer_base.account_balance AS account_balance,
-  orders_aggregated.uid AS uid,
-  orders_aggregated.total_order_amount AS total_order_amount,
-  orders_aggregated.average_order_amount AS average_order_amount,
-  orders_aggregated.order_count AS order_count
-FROM customer_base AS customer_base
-LEFT JOIN orders_aggregated AS orders_aggregated ON CAST(customer_base.customer_id AS STRING) = orders_aggregated.uid
+  orders_aggregated.uid AS uid
+FROM orders_aggregated AS orders_aggregated

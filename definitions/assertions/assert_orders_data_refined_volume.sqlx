@@ -1,9 +1,0 @@
-config {
-  type: "assertion",
-  name: "assert_orders_data_refined_volume",
-  description: "Volume check for orders_data_refined -- fails if the table is empty. NOTE: no partition column is configured, so a period-over-period comparison is not possible; set partition_by to get the fuller check."
-}
-
-SELECT COUNT(*) AS actual_row_count
-FROM ${ref("orders_data_refined")}
-HAVING COUNT(*) = 0

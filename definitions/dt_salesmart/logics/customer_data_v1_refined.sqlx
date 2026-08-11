@@ -7,7 +7,7 @@ config {
   schema: "gold",
   tags: ["dt_salesmart"],
   columns: {
-    "customer_id": "TODO: add a description for this column.",
+    "customer_id": "Calculation: COUNT(*) AS total_customer",
     "customer_name": "TODO: add a description for this column.",
     "signup_timestamp": "TODO: add a description for this column.",
     "account_balance": "TODO: add a description for this column.",
@@ -29,6 +29,7 @@ WITH customer_tags AS (
 )
 SELECT
   customer_data_v1.customer_id AS customer_id,
+  COUNT(*) AS total_customer,
   customer_data_v1.customer_name AS customer_name,
   customer_data_v1.signup_timestamp AS signup_timestamp,
   customer_data_v1.account_balance AS account_balance,
@@ -38,3 +39,4 @@ SELECT
 FROM ${ref("customer_data_v1")} AS customer_data_v1
 INNER JOIN customer_tags AS customer_tags ON customer_data_v1.customer_id =
 SAFE_CAST(customer_data_with_tags.Customer_Id AS INT64)
+GROUP BY customer_data_v1.customer_id, customer_data_v1.customer_name, customer_data_v1.signup_timestamp, customer_data_v1.account_balance, customer_tags.Index, customer_tags.First_Name, customer_tags.Last_Name

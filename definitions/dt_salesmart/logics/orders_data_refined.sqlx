@@ -27,7 +27,6 @@ WITH customer_orders AS (
 )
 SELECT
   customer_orders.order_id AS order_id,
-  customer_orders.order_count as order_count,
   customer_orders.total_amount AS total_amount,
   customer_orders.avg_amount AS avg_amount
 FROM customer_orders AS customer_orders

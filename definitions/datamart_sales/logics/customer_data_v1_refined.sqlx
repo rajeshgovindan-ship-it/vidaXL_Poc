@@ -10,16 +10,7 @@ config {
     "customer_id": "TODO: add a description for this column.",
     "customer_name": "TODO: add a description for this column.",
     "signup_timestamp": "TODO: add a description for this column.",
-    "account_balance": "TODO: add a description for this column.",
-    "Index": "TODO: add a description for this column.",
-    "Customer_Id": "TODO: add a description for this column.",
-    "First_Name": "TODO: add a description for this column.",
-    "Last_Name": "TODO: add a description for this column.",
-    "order_id": "TODO: add a description for this column.",
-    "order_date": "TODO: add a description for this column.",
-    "uid": "TODO: add a description for this column.",
-    "amount": "TODO: add a description for this column.",
-    "status": "TODO: add a description for this column."
+    "account_balance": "TODO: add a description for this column."
   },
   description: "Gold table 'customer_data_v1_refined' -- full snapshot, rebuilt on every run."
 }
@@ -31,39 +22,10 @@ WITH customer_base AS (
     customer_data_v1.signup_timestamp AS signup_timestamp,
     customer_data_v1.account_balance AS account_balance
   FROM ${ref("customer_data_v1")} AS customer_data_v1
-),
-customer_tags AS (
-  SELECT
-    customer_data_with_tags.Index AS Index,
-    customer_data_with_tags.Customer_Id AS Customer_Id,
-    customer_data_with_tags.First_Name AS First_Name,
-    customer_data_with_tags.Last_Name AS Last_Name
-  FROM ${ref("customer_data_with_tags")} AS customer_data_with_tags
-),
-orders AS (
-  SELECT
-    orders_data.order_id AS order_id,
-    orders_data.order_date AS order_date,
-    orders_data.uid AS uid,
-    orders_data.amount AS amount,
-    orders_data.status AS status
-  FROM ${ref("orders_data")} AS orders_data
 )
 SELECT
   customer_base.customer_id AS customer_id,
-  customer_tags.Index AS Index,
-  orders.order_id AS order_id,
   customer_base.customer_name AS customer_name,
   customer_base.signup_timestamp AS signup_timestamp,
-  customer_base.account_balance AS account_balance,
-  customer_tags.First_Name AS First_Name,
-  customer_tags.Last_Name AS Last_Name,
-  orders.order_date AS order_date,
-  orders.uid AS uid,
-  orders.amount AS amount,
-  orders.status AS status
+  customer_base.account_balance AS account_balance
 FROM customer_base AS customer_base
-INNER JOIN customer_tags AS customer_tags ON customer_base.customer_id =
-SAFE_CAST(customer_tags.Customer_Id AS INT64)
-LEFT JOIN orders AS orders ON customer_tags.Customer_Id =
-orders.uid

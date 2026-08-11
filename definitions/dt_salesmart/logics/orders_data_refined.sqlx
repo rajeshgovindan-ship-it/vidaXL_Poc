@@ -18,7 +18,7 @@ WITH customer_orders AS (
   SELECT
     orders_data.order_id AS order_id,
     COUNT(*) AS order_count,
-    SUM(amount) AS total_amount, AS total_amount,
+    SUM(amount) AS total_amount,
     AVG(amount) AS avg_amount
   FROM ${ref("orders_data")} AS orders_data
   WHERE orders_data.status = 'COMPLETED'

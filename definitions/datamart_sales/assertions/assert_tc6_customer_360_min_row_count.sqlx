@@ -1,0 +1,9 @@
+config {
+  type: "assertion",
+  name: "assert_tc6_customer_360_min_row_count",
+  description: "Minimum row count check for tc6_customer_360 -- fails if the table has fewer than 1 row(s), catching a load that silently produced too little data."
+}
+
+SELECT COUNT(*) AS actual_row_count
+FROM ${ref("tc6_customer_360")}
+HAVING COUNT(*) < 1

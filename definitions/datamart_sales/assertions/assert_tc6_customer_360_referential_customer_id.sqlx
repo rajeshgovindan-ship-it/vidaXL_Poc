@@ -1,0 +1,10 @@
+config {
+  type: "assertion",
+  name: "assert_tc6_customer_360_referential_customer_id",
+  description: "Referential integrity check: every non-null tc6_customer_360.customer_id must exist in gcp-accelerator-380712.gold.tc1_dim_customer.customer_id -- catches orphaned foreign key values."
+}
+
+SELECT t.customer_id
+FROM ${ref("tc6_customer_360")} AS t
+WHERE t.customer_id IS NOT NULL
+  AND t.customer_id NOT IN (SELECT customer_id FROM ${ref("tc1_dim_customer")})

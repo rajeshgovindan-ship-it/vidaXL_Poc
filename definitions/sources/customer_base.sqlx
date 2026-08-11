@@ -1,0 +1,5 @@
+config {
+  type: "declaration",
+  schema: "default",
+  name: "customer_base"
+}

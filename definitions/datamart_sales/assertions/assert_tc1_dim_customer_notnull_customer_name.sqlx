@@ -1,0 +1,9 @@
+config {
+  type: "assertion",
+  name: "assert_tc1_dim_customer_notnull_customer_name",
+  description: "Non-null check for tc1_dim_customer.customer_name -- all data quality checks are generated as standalone assertion files."
+}
+
+SELECT *
+FROM ${ref("tc1_dim_customer")}
+WHERE customer_name IS NULL

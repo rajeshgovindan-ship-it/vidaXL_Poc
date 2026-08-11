@@ -17,12 +17,11 @@ config {
 
 SELECT
   customer_data_v1.customer_id AS customer_id,
-  ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY signup_timestamp DESC) AS rn,
+  SUM() OVER (PARTITION BY customer_id ORDER BY signup_timestamp DESC) AS sum_val,
   customer_data_v1.customer_name AS customer_name,
   customer_data_v1.signup_timestamp AS signup_timestamp,
   customer_data_v1.account_balance AS account_balance
 FROM ${ref("customer_data_v1")} AS customer_data_v1
-QUALIFY rn = 1
 
 
 post_operations {

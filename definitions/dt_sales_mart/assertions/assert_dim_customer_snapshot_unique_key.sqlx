@@ -1,0 +1,10 @@
+config {
+  type: "assertion",
+  name: "assert_dim_customer_snapshot_unique_key",
+  description: "Uniqueness check for dim_customer_snapshot (customer_id) -- all data quality checks are generated as standalone assertion files."
+}
+
+SELECT customer_id, COUNT(*) AS row_count
+FROM ${ref("dim_customer_snapshot")}
+GROUP BY customer_id
+HAVING COUNT(*) > 1

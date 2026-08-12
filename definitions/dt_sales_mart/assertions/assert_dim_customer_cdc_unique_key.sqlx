@@ -1,6 +1,7 @@
 config {
   type: "assertion",
   name: "assert_dim_customer_cdc_unique_key",
+  schema: "gold_assertions",
   description: "Uniqueness check for dim_customer_cdc (customer_id) -- all data quality checks are generated as standalone assertion files."
 }
 

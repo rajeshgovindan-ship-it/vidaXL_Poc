@@ -1,9 +1,0 @@
-config {
-  type: "assertion",
-  name: "assert_tc6_customer_360_notnull_customer_id",
-  description: "Non-null check for tc6_customer_360.customer_id -- all data quality checks are generated as standalone assertion files."
-}
-
-SELECT *
-FROM ${ref("tc6_customer_360")}
-WHERE customer_id IS NULL

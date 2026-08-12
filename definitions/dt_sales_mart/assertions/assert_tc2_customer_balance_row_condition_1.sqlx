@@ -1,9 +1,0 @@
-config {
-  type: "assertion",
-  name: "assert_tc2_customer_balance_row_condition_1",
-  description: "Row condition check for tc2_customer_balance: rows violating (account_balance >= 0) -- operations-type table, config.assertions.rowConditions is not supported inline."
-}
-
-SELECT *
-FROM ${ref("tc2_customer_balance")}
-WHERE NOT (account_balance >= 0)

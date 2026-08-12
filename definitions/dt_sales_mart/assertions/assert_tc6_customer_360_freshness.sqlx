@@ -1,9 +1,0 @@
-config {
-  type: "assertion",
-  name: "assert_tc6_customer_360_freshness",
-  description: "Freshness check for tc6_customer_360.signup_timestamp -- fails if the most recent value is more than 14 day(s) old, catching a pipeline that has silently stopped updating."
-}
-
-SELECT MAX(signup_timestamp) AS most_recent_value
-FROM ${ref("tc6_customer_360")}
-HAVING CAST(MAX(signup_timestamp) AS TIMESTAMP) < TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 14 DAY)

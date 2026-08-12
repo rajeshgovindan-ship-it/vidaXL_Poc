@@ -25,10 +25,10 @@ WITH customer_orders AS (
   WHERE status = 'COMPLETED'
 )
 SELECT
-  amount - COALESCE(previous_order_amount, 0) AS amount_difference,
-  customer_orders.amount AS nan,
+  amount - COALESCE(next_val, 0) AS amount_difference,
+  customer_orders.amount AS next_val,
   customer_orders.order_id AS order_id,
   customer_orders.order_date AS order_date,
   customer_orders.amount AS amount
 FROM customer_orders AS customer_orders
-WHERE amount > COALESCE(previous_order_amount, 0)
+WHERE amount > COALESCE(next_val, 0)

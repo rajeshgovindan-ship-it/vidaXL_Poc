@@ -13,7 +13,7 @@ config {
     "order_date": "Order date -- backs partition_by and incremental_filter."
   },
   bigquery: {
-    partitionBy: "DATE(order_date)",
+    partitionBy: "order_date",
   },
   description: "INCREMENTAL: only processes rows matching incremental_filter on each run after the first."
 }

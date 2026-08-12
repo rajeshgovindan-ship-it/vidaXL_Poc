@@ -1,6 +1,7 @@
 config {
   type: "assertion",
   name: "assert_tc2_customer_balance_min_row_count",
+  schema: "gold_assertions",
   description: "Minimum row count check for tc2_customer_balance -- fails if the table has fewer than 1 row(s), catching a load that silently produced too little data."
 }
 

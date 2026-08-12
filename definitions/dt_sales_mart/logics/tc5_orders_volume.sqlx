@@ -12,7 +12,7 @@ config {
     "amount": "Order amount."
   },
   bigquery: {
-    partitionBy: "DATE(order_date)",
+    partitionBy: "order_date",
   },
   description: "TC5: volume."
 }

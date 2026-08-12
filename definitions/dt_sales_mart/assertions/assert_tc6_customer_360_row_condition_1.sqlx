@@ -1,6 +1,7 @@
 config {
   type: "assertion",
   name: "assert_tc6_customer_360_row_condition_1",
+  schema: "gold_assertions",
   description: "Row condition check for tc6_customer_360: rows violating (customer_id IS NOT NULL) -- operations-type table, config.assertions.rowConditions is not supported inline."
 }
 

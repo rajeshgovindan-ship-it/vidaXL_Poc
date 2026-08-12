@@ -1,13 +1,14 @@
 config {
   type: "assertion",
   name: "assert_tc5_orders_volume_volume",
-  description: "Volume check for tc5_orders_volume -- fails if the most recent DATE(order_date) loaded fewer than 50% of the average rows per period over the preceding 7. Catches a load that ran 'successfully' but produced far less data than normal."
+  schema: "gold_assertions",
+  description: "Volume check for tc5_orders_volume -- fails if the most recent order_date loaded fewer than 50% of the average rows per period over the preceding 7. Catches a load that ran 'successfully' but produced far less data than normal."
 }
 
 WITH per_period AS (
-  SELECT DATE(order_date) AS p, COUNT(*) AS n
+  SELECT order_date AS p, COUNT(*) AS n
   FROM ${ref("tc5_orders_volume")}
-  GROUP BY DATE(order_date)
+  GROUP BY order_date
 ),
 latest AS (SELECT MAX(p) AS p FROM per_period),
 baseline AS (

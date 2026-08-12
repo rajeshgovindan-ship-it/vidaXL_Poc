@@ -9,26 +9,30 @@ config {
   columns: {
     "order_id": "TODO: add a description for this column.",
     "order_date": "TODO: add a description for this column.",
+    "uid": "TODO: add a description for this column.",
     "amount": "TODO: add a description for this column.",
-    "amount_difference": "Calculation: amount - COALESCE(previous_order_amount, 0) AS amount_difference"
+    "status": "TODO: add a description for this column.",
+    "previous_amount": "TODO: add a description for this column."
   },
   description: "Gold table 'orders_data_refined' -- full snapshot, rebuilt on every run."
 }
 
-WITH customer_orders AS (
+WITH customer_order_history AS (
   SELECT
     orders_data.order_id AS order_id,
     orders_data.order_date AS order_date,
+    orders_data.uid AS uid,
     orders_data.amount AS amount,
-    LEAD(amount) OVER (PARTITION BY order_id ORDER BY order_date DESC) AS next_val
+    orders_data.status AS status
   FROM ${ref("orders_data")} AS orders_data
   WHERE status = 'COMPLETED'
 )
 SELECT
-  amount - COALESCE(next_val, 0) AS amount_difference,
-  customer_orders.amount AS next_val,
-  customer_orders.order_id AS order_id,
-  customer_orders.order_date AS order_date,
-  customer_orders.amount AS amount
-FROM customer_orders AS customer_orders
-WHERE amount > COALESCE(next_val, 0)
+  customer_order_history.amount AS previous_amount,
+  LAG(amount) OVER (PARTITION BY order_id ORDER BY order_date DESC) AS prev_val,
+  customer_order_history.order_id AS order_id,
+  customer_order_history.order_date AS order_date,
+  customer_order_history.uid AS uid,
+  customer_order_history.amount AS amount,
+  customer_order_history.status AS status
+FROM customer_order_history AS customer_order_history

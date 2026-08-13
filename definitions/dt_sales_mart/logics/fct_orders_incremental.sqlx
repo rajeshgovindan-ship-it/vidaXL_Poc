@@ -5,23 +5,23 @@
 config {
   type: "incremental",
   schema: "gold",
-  uniqueKey: ["order_id", "order_date"],
+  uniqueKey: ["order_id"],
   tags: ["dt_sales_mart", "fct_orders_incremental", "gold", "daily"],
   columns: {
     "order_id": "Order id.",
-    "amount": "Order amount.",
-    "order_date": "Order date -- backs partition_by and incremental_filter."
+    "order_date": "Order date -- backs partition_by and incremental_filter; must be its own row.",
+    "amount": "Order amount."
   },
   bigquery: {
-    partitionBy: "order_date",
+    partitionBy: "DATE(order_date)",
   },
-  description: "INCREMENTAL: only processes rows matching incremental_filter on each run after the first."
+  description: "INCREMENTAL: only processes rows matching incremental_filter after the first run."
 }
 
 SELECT
   orders_data.order_id AS order_id,
-  orders_data.amount AS amount,
-  orders_data.order_date AS order_date
+  orders_data.order_date AS order_date,
+  orders_data.amount AS amount
 FROM ${ref("orders_data")} AS orders_data
 ${when(incremental(),
   `WHERE order_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 DAY)`
@@ -32,8 +32,7 @@ post_operations {
   ${when(!incremental(),
     `ALTER TABLE ${self()}
     ADD PRIMARY KEY (
-      order_id,
-      order_date
+      order_id
     ) NOT ENFORCED`
   )}
 }

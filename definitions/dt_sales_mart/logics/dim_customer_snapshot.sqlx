@@ -8,14 +8,16 @@ config {
   tags: ["dt_sales_mart", "dim_customer_snapshot", "gold", "daily"],
   columns: {
     "customer_id": "Customer id.",
-    "customer_name": "Name."
+    "customer_name": "Name.",
+    "account_balance": "Balance."
   },
-  description: "TABLE: full rebuild every run -- simplest, but rewrites the whole table each time."
+  description: "TABLE: full CREATE OR REPLACE every run -- simplest load type."
 }
 
 SELECT
   customer_data_v1.customer_id AS customer_id,
-  customer_data_v1.customer_name AS customer_name
+  customer_data_v1.customer_name AS customer_name,
+  customer_data_v1.account_balance AS account_balance
 FROM ${ref("customer_data_v1")} AS customer_data_v1
 
 

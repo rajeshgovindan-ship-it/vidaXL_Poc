@@ -1,0 +1,11 @@
+config {
+  type: "assertion",
+  name: "assert_fct_orders_all_years_unique_key",
+  schema: "gold_assertions",
+  description: "Uniqueness check for fct_orders_all_years (order_id) -- all data quality checks are generated as standalone assertion files."
+}
+
+SELECT order_id, COUNT(*) AS row_count
+FROM ${ref("fct_orders_all_years")}
+GROUP BY order_id
+HAVING COUNT(*) > 1

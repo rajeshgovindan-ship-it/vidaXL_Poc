@@ -9,7 +9,7 @@ config {
   columns: {
     "order_id": "TODO: add a description for this column.",
     "amount": "TODO: add a description for this column.",
-    "region": "NULL for 2024 rows -- that source table has no region column."
+    "status": "NULL for 2024 rows -- that source table has no region column."
   },
   description: "UNION ALL: combines orders_2024 + orders_2025, keeping all rows (no dedup)."
 }
@@ -18,21 +18,14 @@ WITH orders_unioned AS (
   SELECT
     nan AS order_id,
     nan AS amount,
-    NULL AS region
-  FROM ${ref("orders_2024")} AS orders_2024
-  WHERE nan
-  UNION ALL
-  SELECT
-    nan AS order_id,
-    nan AS amount,
-    nan AS region
-  FROM ${ref("orders_2025")} AS orders_2025
+    nan AS status
+  FROM ${ref("orders_data")} AS orders_data
   WHERE nan
 )
 SELECT
   orders_unioned.order_id AS order_id,
   orders_unioned.amount AS amount,
-  orders_unioned.region AS region
+  orders_unioned.status AS status
 FROM orders_unioned AS orders_unioned
 
 

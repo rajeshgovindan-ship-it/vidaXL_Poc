@@ -18,7 +18,10 @@ config {
     "Phone_2": "TODO: add a description for this column.",
     "Email": "TODO: add a description for this column.",
     "Subscription_Date": "TODO: add a description for this column.",
-    "Website": "TODO: add a description for this column."
+    "Website": "TODO: add a description for this column.",
+    "dw_load_timestamp": "Audit: when this row was written by Dataform. -- Calculation: CURRENT_TIMESTAMP()",
+    "dw_source_table": "Audit: the source table this row was derived from. -- Calculation: 'gcp-accelerator-380712.bq_data.customer_data_with_tags'",
+    "dw_batch_date": "Audit: logical load date of the batch that wrote this row. -- Calculation: CURRENT_DATE()"
   },
   description: "Gold table 'customer_data_with_tags_refined' -- full snapshot, rebuilt on every run."
 }
@@ -35,5 +38,8 @@ SELECT
   customer_data_with_tags.Phone_2 AS Phone_2,
   customer_data_with_tags.Email AS Email,
   customer_data_with_tags.Subscription_Date AS Subscription_Date,
-  customer_data_with_tags.Website AS Website
+  customer_data_with_tags.Website AS Website,
+  CURRENT_TIMESTAMP() AS dw_load_timestamp,
+  'gcp-accelerator-380712.bq_data.customer_data_with_tags' AS dw_source_table,
+  CURRENT_DATE() AS dw_batch_date
 FROM ${ref("customer_data_with_tags")} AS customer_data_with_tags

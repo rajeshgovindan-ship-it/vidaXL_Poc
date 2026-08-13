@@ -12,9 +12,6 @@ config {
     "order_date": "Order date -- backs partition_by and incremental_filter; must be its own row.",
     "amount": "Order amount."
   },
-  bigquery: {
-    partitionBy: "DATE(order_date)",
-  },
   description: "INCREMENTAL: only processes rows matching incremental_filter after the first run."
 }
 

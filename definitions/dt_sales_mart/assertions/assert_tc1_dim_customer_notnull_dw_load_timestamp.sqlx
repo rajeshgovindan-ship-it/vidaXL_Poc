@@ -1,7 +1,6 @@
 config {
   type: "assertion",
   name: "assert_tc1_dim_customer_notnull_dw_load_timestamp",
-  schema: "gold_assertions",
   description: "Non-null check for tc1_dim_customer.dw_load_timestamp -- all data quality checks are generated as standalone assertion files."
 }
 

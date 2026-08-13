@@ -1,7 +1,6 @@
 config {
   type: "assertion",
   name: "assert_tc6_customer_360_referential_customer_id",
-  schema: "gold_assertions",
   description: "Referential integrity check: every non-null tc6_customer_360.customer_id must exist in gcp-accelerator-380712.gold.tc1_dim_customer.customer_id -- catches orphaned foreign key values."
 }
 

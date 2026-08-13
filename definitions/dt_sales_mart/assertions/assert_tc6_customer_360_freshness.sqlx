@@ -1,7 +1,6 @@
 config {
   type: "assertion",
   name: "assert_tc6_customer_360_freshness",
-  schema: "gold_assertions",
   description: "Freshness check for tc6_customer_360.signup_timestamp -- fails if the most recent value is more than 14 day(s) old, catching a pipeline that has silently stopped updating."
 }
 

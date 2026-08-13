@@ -1,7 +1,6 @@
 config {
   type: "assertion",
   name: "assert_tc5_orders_volume_volume",
-  schema: "gold_assertions",
   description: "Volume check for tc5_orders_volume -- fails if the most recent order_date loaded fewer than 50% of the average rows per period over the preceding 7. Catches a load that ran 'successfully' but produced far less data than normal."
 }
 

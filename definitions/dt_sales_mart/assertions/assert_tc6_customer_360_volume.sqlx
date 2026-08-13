@@ -1,7 +1,6 @@
 config {
   type: "assertion",
   name: "assert_tc6_customer_360_volume",
-  schema: "gold_assertions",
   description: "Volume check for tc6_customer_360 -- fails if the most recent DATE(signup_timestamp) loaded fewer than 50% of the average rows per period over the preceding 7. Catches a load that ran 'successfully' but produced far less data than normal."
 }
 

@@ -15,16 +15,16 @@ config {
 
 WITH customers_unioned AS (
   SELECT
-    nan AS customer_id,
-    nan AS customer_name
+    customer_data_v1.customer_id AS customer_id,
+    customer_data_v1.customer_name AS customer_name
   FROM ${ref("customer_data_v1")} AS customer_data_v1
-  WHERE nan
+  WHERE customer_id
   UNION DISTINCT
   SELECT
     SAFE_CAST(Customer_Id AS INT64) AS customer_id,
-    nan AS customer_name
+    customer_data_v1.customer_name AS customer_name
   FROM ${ref("customer_data_with_tags")} AS customer_data_with_tags
-  WHERE nan
+  WHERE customer_id
 )
 SELECT
   customers_unioned.customer_id AS customer_id,

@@ -20,7 +20,6 @@ WITH orders_unioned AS (
     orders_data.amount AS amount,
     order_data.status AS status
   FROM ${ref("orders_data")} AS orders_data
-  WHERE order_id
 )
 SELECT
   orders_unioned.order_id AS order_id,

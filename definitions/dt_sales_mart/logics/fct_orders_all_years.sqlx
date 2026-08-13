@@ -18,7 +18,7 @@ WITH orders_unioned AS (
   SELECT
     orders_data.order_id AS order_id,
     orders_data.amount AS amount,
-    order_data.status AS status
+    orders_data.status AS status
   FROM ${ref("orders_data")} AS orders_data
 )
 SELECT

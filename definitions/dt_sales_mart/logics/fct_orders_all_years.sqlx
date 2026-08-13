@@ -16,11 +16,11 @@ config {
 
 WITH orders_unioned AS (
   SELECT
-    nan AS order_id,
-    nan AS amount,
-    nan AS status
+    orders_data.order_id AS order_id,
+    orders_data.amount AS amount,
+    order_data.status AS status
   FROM ${ref("orders_data")} AS orders_data
-  WHERE nan
+  WHERE order_id
 )
 SELECT
   orders_unioned.order_id AS order_id,
